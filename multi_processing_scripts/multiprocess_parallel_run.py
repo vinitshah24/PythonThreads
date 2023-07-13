@@ -1,18 +1,27 @@
-import multiprocessing
-import time
 import datetime
+import json
+import multiprocessing
 import random
+import time
 
 
-def run_job(q, stop_processes, result_list):
+def run_job(q, curr_thread, stop_processes, result_list, running_processes):
     while not q.empty() and not stop_processes.value:
         try:
             job = q.get()
-            print(f"Starting the task {job}")
+            start_time = datetime.datetime.utcnow().isoformat()
             runtime = random.randint(2, 3)
+            running_processes[job] = {
+                "id": job,
+                "thread": curr_thread,
+                "start_time": start_time,
+                "runtime": runtime
+            }
+            print(f"Starting the task {job} on {curr_thread}")
             run_dict = {
                 "id": job,
-                "start_time": datetime.datetime.utcnow().isoformat(),
+                "thread": curr_thread,
+                "start_time": start_time,
                 "runtime": runtime,
                 "end_time": None
             }
@@ -24,11 +33,11 @@ def run_job(q, stop_processes, result_list):
         finally:
             if run_dict["end_time"] is None:
                 run_dict["end_time"] = datetime.datetime.utcnow().isoformat()
+            del running_processes[job]
             result_list.append(run_dict)
 
 
 if __name__ == '__main__':
-    global RESULT
     try:
         jobQueue = multiprocessing.Queue()
         global_timeout = 6
@@ -36,14 +45,18 @@ if __name__ == '__main__':
         job_count = 100
         stop_processes = multiprocessing.Value('b', False)
         result_list = multiprocessing.Manager().list()
+        running_processes = multiprocessing.Manager().dict()
         processes = []
         timeout_start = time.time()
+        print(f"START: {datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')}")
         for job in range(job_count):
             jobQueue.put(f"JOB-{job + 1}")
         for _ in range(processes_count):
-            process = multiprocessing.Process(name=f"Thread-{_+1}",
+            curr_thread = f"Thread-{_+1}"
+            process = multiprocessing.Process(name=curr_thread,
                                               target=run_job,
-                                              args=(jobQueue, stop_processes, result_list))
+                                              args=(jobQueue, curr_thread, stop_processes,
+                                                    result_list, running_processes))
             processes.append(process)
         for process in processes:
             process.start()
@@ -51,15 +64,25 @@ if __name__ == '__main__':
         time.sleep(global_timeout)
         print(f"Timeout occurred after {global_timeout} secs")
         stop_processes.value = True
+        # Empty the queue to avoid OError: [Errno 32] Broken pipe
+        while not jobQueue.empty():
+            jobQueue.get()
+        jobQueue.close()
         for process in processes:
             if process.is_alive():
                 process.kill()
-                print(f"Process {process} is killed!")
+                print(f"Process {process.name} is killed!")
                 process.join(timeout=1)
     except KeyboardInterrupt:
         stop_processes.value = True
-        jobQueue.join()
     finally:
-        print(f"Total Runtime: {time.time() - timeout_start}")
+        if timeout_start is not None:
+            print(f"END: {datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')}")
+            print(f"Total Runtime: {time.time() - timeout_start}")
         for item in result_list:
             print(item)
+        if running_processes:
+            print("Running processes that was killed:")
+            # print(json.dumps(dict(running_processes), indent=4))
+            for key, item in dict(running_processes).items():
+                print(item)
