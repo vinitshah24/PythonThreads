@@ -1,0 +1,58 @@
+"""
+Running the example creates the barrier and starts all child processes as before.
+
+In this case, the main process is impatient and will only wait 5 seconds for all child processes to complete.
+Some may take longer, and this will differ with each run of the code.
+
+On this specific run, the timeout is reached and the barrier is broken. All waiting child processes raise a
+BrokenBarrierError, which is ignored and the processes terminate. All child processes not yet at the barrier will
+reach the barrier, raise a BrokenBarrierError and terminate.
+
+The main process raises a BrokenBarrierError in the call to wait() and reports that some child processes did not
+finish within the timeout.
+-----------------------------------------
+
+The main process can wait a fixed number of seconds for all processes to finish.
+If all processes finish within the time, all is well, otherwise we can report that not all work could be finished
+on time.
+When using a timeout, all calls to wait() should handle a potential BrokenBarrierError that could be raised.
+Note, the BrokenBarrierError is provided by the threading module, not the multiprocessing module.
+"""
+
+from time import sleep
+from random import random
+from multiprocessing import Process
+from multiprocessing import Barrier
+from threading import BrokenBarrierError
+
+
+def task(barrier, number):
+    # generate a unique value
+    value = random() * 10
+    # block for a moment
+    sleep(value)
+    # report result
+    print(f'Process {number} done, got: {value}', flush=True)
+    # wait on all other processes to complete
+    try:
+        barrier.wait()
+    except BrokenBarrierError:
+        pass
+
+
+# entry point
+if __name__ == '__main__':
+    # create a barrier
+    barrier = Barrier(5 + 1)
+    # create the worker processes
+    for i in range(5):
+        # start a new process to perform some work
+        worker = Process(target=task, args=(barrier, i))
+        worker.start()
+    # wait for all processes to finish
+    print('Main process waiting on all results...')
+    try:
+        barrier.wait(timeout=5)
+        print('All processes have their result')
+    except BrokenBarrierError:
+        print('Some processes did not finish on time...')
