@@ -216,7 +216,7 @@ Remember that successful model creation involves thorough data preprocessing, fe
 **5. Customer Retention Rate:** Measure the company's ability to retain existing customers over time.
 
 ```Customer
-/ (# Customers at End of Period − # New Customers) ```
+Customer Retention Rate= # Customers at Start of Period / (# Customers at End of Period − # New Customers)
 ```
 
 **6. Return on Equity (ROE):** Assess how efficiently the company generates profits from shareholder equity.
