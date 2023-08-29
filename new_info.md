@@ -15,7 +15,6 @@ Investment banking is known for its fast-paced and competitive nature. Professio
 
 ---
 
-
 **IPO in Lehman Terms:**
 
 Imagine you have a small company that's been doing really well. You've been working hard, and your company is growing fast. But now, you need more money to keep growing and expanding. You've heard about something called an "IPO," and you're thinking it might be a good way to get the money you need.
@@ -184,3 +183,53 @@ Algorithms:
     - Combine predictions from multiple models (e.g., Random Forest, SVM, Logistic Regression) to improve overall performance.
 
 Remember that successful model creation involves thorough data preprocessing, feature engineering, and hyperparameter tuning. Additionally, the quality and quantity of data you have will significantly impact the performance of your machine learning model. It's a good idea to experiment with multiple models and compare their performance using techniques like cross-validation to ensure your chosen model generalizes well to new data.
+
+---
+
+
+
+
+1. **Revenue Growth Rate: 20%**
+2. **Profit Margin: 15%**
+3. Market Opportunity: 10%
+4. Management Quality: 15%
+5. **Industry Growth Rate: 10%**
+6. Market Sentiment: 8%
+7. **Financial Leverage: 5%**
+8. **Customer Retention Rate: 7%**
+9. **Return on Equity (ROE): 10%**
+
+**1. Revenue Growth Rate:** This factor assesses the company's ability to generate increasing sales over time.
+
+``Revenue Growth Rate = (Current Year Revenue − Previous Year Revenue) / Previous Year Revenue``
+
+**2. Profit Margin:** Profit margins reflect the company's ability to manage costs and generate profits from its revenue.
+
+    ``Profit Margin = Net Income / Total Revenue``
+
+**3. Industry Growth Rate:** Consider the historical and projected growth rate of the industry in which the company operates.
+
+**4. Financial Leverage:** Evaluate the company's level of debt and its impact on financial risk.
+
+``Financial Leverage = Total Debt / Total Equity``
+
+**5. Customer Retention Rate:** Measure the company's ability to retain existing customers over time.
+
+```Customer
+/ (# Customers at End of Period − # New Customers) ```
+```
+
+**6. Return on Equity (ROE):** Assess how efficiently the company generates profits from shareholder equity.
+
+``ROE = Shareholders’ Equity / Net Income``
+
+**7. Lock-Up Period Length:** Evaluate the duration of the lock-up period, as a longer lock-up might indicate higher
+perceived risk. (90-180 days best, 1-2 year good, > is bad)
+
+**8. Earnings Before Interest and Taxes (EBIT) Margin:** Measure the company's operating profitability.
+
+``EBIT Margin = EBIT / Total Revenue``
+
+**9. Debt-to-Equity Ratio:** Assess the company's reliance on debt financing.
+
+``Debt-to-Equity Ratio = Total Debt / Total Equity``
